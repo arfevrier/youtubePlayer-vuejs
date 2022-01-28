@@ -29,7 +29,6 @@
         >
           Lancer
         </v-btn>
-
         
           <v-text-field
             dense

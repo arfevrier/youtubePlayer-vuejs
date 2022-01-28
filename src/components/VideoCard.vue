@@ -8,6 +8,8 @@
 
    <v-card-subtitle>{{ title }}</v-card-subtitle>
 
+   <v-divider></v-divider>
+
     <v-card-text>
       <div class="text-center">
           <video controls="" width="300" :src="source"></video>
