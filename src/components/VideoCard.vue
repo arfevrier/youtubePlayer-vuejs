@@ -1,14 +1,14 @@
 <template>
     <v-card
-    class="mx-auto my-12"
+    class="mx-auto"
     max-width="600"
     >
 
     <v-card-title>Vidéo</v-card-title>
 
-   <v-card-subtitle>{{ title }}</v-card-subtitle>
+    <v-card-subtitle>{{ title }}</v-card-subtitle>
 
-   <v-divider></v-divider>
+    <v-divider></v-divider>
 
     <v-card-text>
       <div class="text-center">

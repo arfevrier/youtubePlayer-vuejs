@@ -15,14 +15,18 @@
         </v-avatar>
 
         <v-btn
-          v-for="link in links"
-          :key="link"
           text
         >
-          {{ link }}
+        {{ title }}
         </v-btn>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
+        <v-btn 
+            text
+            href="https://api.arfevrier.fr/v2/youtube/login"
+        >
+          Abonnements
+        </v-btn>
         <v-btn 
             text
             @click="generate"
@@ -62,6 +66,9 @@
 
       <v-container>
           <v-row>
+            <v-col v-for="(object, index) in subscriptions" :key="index">
+              <SubscriptionCard :title="object.title" :source="'https://api.arfevrier.fr/v2/youtube/video/'+object.resourceId.videoId" :thumbnails="object.thumbnails.medium.url" :date="dateToString(object.publishedAt)"/>
+            </v-col>
             <v-col v-for="(object, index) in videos" :key="index">
               <VideoCard :title="object.title" :source="object.source"/>
             </v-col>
@@ -77,29 +84,62 @@
 <script>
   import VideoCard from './VideoCard';
   import AudioCard from './AudioCard';
+  import SubscriptionCard from './SubscriptionCard';
   import functions from '../plugins/functions';
 
   export default {
     components: {
         VideoCard,
-        AudioCard
+        AudioCard,
+        SubscriptionCard
     },
     computed: {
       mobile() {
         return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs
       },
+      title() {
+        if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs){
+          return 'Vidéo & audio YouTube'
+        } else {
+          return 'Lecteur vidéo et audio YouTube'
+        }
+      }
     },
     data: () => ({
       chargement: false,
       url: '',
       erreur: false,
-      links: [
-        'Lecteur vidéo et audio YouTube'
-      ],
+      subscriptions: [],
       videos: [],
       audios: [],
     }),
+    mounted() {
+      this.startup()
+    },
     methods: {
+        startup(){
+            if (window.location.hash.includes("#subscriptions")){
+              this.$data.chargement = true
+              fetch("https://api.arfevrier.fr/v2/youtube/subscriptions/"+window.location.hash.split("=")[1])
+              .then(response => {
+                  if(response.ok){
+                      return response.json()
+                  } else {
+                      throw '!= 200';
+                  }         
+              })
+              .then(response => {
+                  this.$data.subscriptions = response.subscriptions
+              })
+              .catch(err => {
+                  console.log(err);
+                  this.$data.erreur = true;
+              })
+              .finally(() =>{
+                  this.$data.chargement = false
+              });
+            }
+        },
         generate(){
             this.$data.chargement = true
             var yt_id = functions.youtubeGetID(this.$data.url)
@@ -144,6 +184,9 @@
             .finally(() =>{
                 this.$data.chargement = false
             });
+        },
+        dateToString(date){
+            return new Date(date).toLocaleString()
         }
     },
   }
