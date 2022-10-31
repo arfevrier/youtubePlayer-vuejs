@@ -139,6 +139,28 @@
                   this.$data.chargement = false
               });
             }
+            if (window.location.search.includes("?q=")){
+              var yt_id = functions.youtubeGetID(decodeURIComponent(window.location.search.split("=")[1]))
+              this.$data.chargement = true
+              fetch("https://api.arfevrier.fr/v2/youtube/video/"+yt_id+"?url")
+              .then(response => {
+                  if(response.ok){
+                      return response.json()
+                  } else {
+                      throw '!= 200';
+                  }         
+              })
+              .then(response => {
+                  location.href = response
+              })
+              .catch(err => {
+                  console.log(err);
+                  this.$data.erreur = true;
+              })
+              .finally(() =>{
+                  this.$data.chargement = false
+              });
+            }
         },
         generate(){
             this.$data.chargement = true
