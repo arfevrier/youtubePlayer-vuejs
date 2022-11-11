@@ -16,6 +16,7 @@
 
         <v-btn
           text
+          href="https://apps.arfevrier.fr/youtube_player/"
         >
         {{ title }}
         </v-btn>
@@ -47,6 +48,33 @@
       </v-container>
     </v-app-bar>
 
+    <v-navigation-drawer
+      v-model="commentaire"
+      absolute
+      bottom
+      temporary
+      right
+      width="50%"
+      color="grey lighten-3"
+    >
+    <div v-if="chargementCommentaire" class="text-center my-12">
+          <v-progress-circular
+              :size="70"
+              :width="7"
+              color="red"
+              indeterminate
+          >
+          </v-progress-circular>
+    </div>
+    <v-container>
+          <v-row>
+            <v-col v-for="(object, index) in comments" :key="index" :cols="6">
+              <CommentCard :user="object.user" :index="index+1" :message="object.message" :date="dateToString(object.date)" :color="object.color"/>
+            </v-col>
+          </v-row>
+      </v-container>
+    </v-navigation-drawer>
+
     <v-main>
       <div v-if="chargement" class="text-center my-12">
           <v-progress-circular
@@ -66,14 +94,14 @@
 
       <v-container>
           <v-row>
+            <v-col v-for="(object, index) in videos" :key="'V'+index">
+              <VideoCard :title="object.title" :id="object.id" :source="object.source" @showComment="comment($event)"/>
+            </v-col>
+            <v-col v-for="(object, index) in audios" :key="'A'+index">
+              <AudioCard :title="object.title" :id="object.id" :source="object.source"/>
+            </v-col>
             <v-col v-for="(object, index) in subscriptions" :key="index">
               <SubscriptionCard :title="object.title" :source="'https://api.arfevrier.fr/v2/youtube/video/'+object.resourceId.videoId" :thumbnails="object.thumbnails.medium.url" :date="dateToString(object.publishedAt)"/>
-            </v-col>
-            <v-col v-for="(object, index) in videos" :key="index">
-              <VideoCard :title="object.title" :source="object.source"/>
-            </v-col>
-            <v-col v-for="(object, index) in audios" :key="index">
-              <AudioCard :title="object.title" :source="object.source"/>
             </v-col>
           </v-row>
       </v-container>
@@ -82,6 +110,7 @@
 </template>
 
 <script>
+  import CommentCard from './CommentCard';
   import VideoCard from './VideoCard';
   import AudioCard from './AudioCard';
   import SubscriptionCard from './SubscriptionCard';
@@ -89,6 +118,7 @@
 
   export default {
     components: {
+        CommentCard,
         VideoCard,
         AudioCard,
         SubscriptionCard
@@ -106,12 +136,15 @@
       }
     },
     data: () => ({
+      chargementCommentaire: false,
+      commentaire: false,
       chargement: false,
       url: '',
       erreur: false,
       subscriptions: [],
       videos: [],
       audios: [],
+      comments: [],
     }),
     mounted() {
       this.startup()
@@ -140,64 +173,29 @@
               });
             }
             if (window.location.search.includes("?q=")){
-              var yt_id = functions.youtubeGetID(decodeURIComponent(window.location.search.split("=")[1]))
-              this.$data.chargement = true
-              fetch("https://api.arfevrier.fr/v2/youtube/video/"+yt_id+"?url")
-              .then(response => {
-                  if(response.ok){
-                      return response.json()
-                  } else {
-                      throw '!= 200';
-                  }         
-              })
-              .then(response => {
-                  location.href = response
-              })
-              .catch(err => {
-                  console.log(err);
-                  this.$data.erreur = true;
-              })
-              .finally(() =>{
-                  this.$data.chargement = false
-              });
+              this.$data.url = decodeURIComponent(window.location.search.split("=")[1])
+              this.generate()
             }
         },
         generate(){
             this.$data.chargement = true
             var yt_id = functions.youtubeGetID(this.$data.url)
             this.$data.url = ''
-            
-            //Video part
-            fetch("https://api.arfevrier.fr/v2/youtube/video/"+yt_id+"?url")
-            .then(response => {
-                if(response.ok){
-                    return response.json()
-                } else {
-                    throw '!= 200';
-                }         
-            })
-            .then(response => {
-                this.$data.videos.push({title:yt_id, source:response})
-            })
-            .catch(err => {
-                console.log(err);
-                this.$data.erreur = true;
-            })
-            .finally(() =>{
-                this.$data.chargement = false
-            });
 
-            //Audio part
-            fetch("https://api.arfevrier.fr/v2/youtube/audio/"+yt_id+"?url")
-            .then(response => {
-                if(response.ok){
-                    return response.json()
+            Promise.all([
+              fetch("https://api.arfevrier.fr/v2/youtube/video/"+yt_id+"?url"),
+              fetch("https://api.arfevrier.fr/v2/youtube/audio/"+yt_id+"?url"),
+              fetch("https://www.googleapis.com/youtube/v3/videos?id="+yt_id+"&part=snippet&key=AIzaSyDvXwykt34G-Ebxa1kNyDCqAuAo0Jj6J5k")
+            ]).then(([video, audio, title]) => {
+                if(video.ok && audio.ok && title.ok){
+                    return Promise.all([video.json(),audio.json(),title.json()])
                 } else {
                     throw '!= 200';
                 }         
             })
-            .then(response => {
-                this.$data.audios.push({title:yt_id, source:response})
+            .then(([video, audio, title]) => {
+                this.$data.videos.push({title:title.items[0].snippet.title, id:yt_id, source:video})
+                this.$data.audios.push({title:title.items[0].snippet.title, id:yt_id, source:audio})
             })
             .catch(err => {
                 console.log(err);
@@ -209,6 +207,27 @@
         },
         dateToString(date){
             return new Date(date).toLocaleString()
+        },
+        async requestComments(id, pageToken=''){
+          var response = await fetch("https://www.googleapis.com/youtube/v3/commentThreads?order=time&maxResults=100&videoId="+id+"&part=snippet&key=AIzaSyDvXwykt34G-Ebxa1kNyDCqAuAo0Jj6J5k&pageToken="+pageToken)
+          response = await response.json()
+          response.items.forEach(element => {
+            this.$data.comments.push({user:element.snippet.topLevelComment.snippet.authorDisplayName,
+                                      message:element.snippet.topLevelComment.snippet.textOriginal,
+                                      date:element.snippet.topLevelComment.snippet.publishedAt,
+                                      color:functions.getRandomColor()
+                                    })
+          })
+          if(response.nextPageToken != undefined){
+						this.requestComments(id, response.nextPageToken)
+					}
+        },
+        comment(id){
+          this.$data.chargementCommentaire = true
+          this.$data.comments.splice(0)
+          this.$data.commentaire = !this.$data.commentaire
+          this.requestComments(id)
+          this.$data.chargementCommentaire = false
         }
     },
   }

@@ -4,9 +4,9 @@
     max-width="600"
     >
 
-    <v-card-title>Vidéo | {{ date }}</v-card-title>
+    <v-card-title>{{ title }}</v-card-title>
 
-    <v-card-subtitle>{{ title }}</v-card-subtitle>
+    <v-card-subtitle>Vidéo | {{ date }}</v-card-subtitle>
 
     <v-divider></v-divider>
 

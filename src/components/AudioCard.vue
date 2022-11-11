@@ -4,9 +4,9 @@
     max-width="600"
     >
 
-    <v-card-title>Audio</v-card-title>
+    <v-card-title>{{ title }}</v-card-title>
 
-    <v-card-subtitle>{{ title }}</v-card-subtitle>
+    <v-card-subtitle>{{ id }}</v-card-subtitle>
 
     <v-divider></v-divider>
     
@@ -20,6 +20,6 @@
 
 <script>
   export default {
-    props: ['title','source'],
+    props: ['title','source','id'],
   }
 </script>
