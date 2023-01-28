@@ -15,11 +15,17 @@
           <video preload="none" controls="" width="300" :src="source" :poster="thumbnails"></video>
       </div>
     </v-card-text>
+    <v-card-actions style="margin-top: -25px;">
+              <v-spacer></v-spacer>
+              <v-btn icon @click.stop="$emit('startSearch', id)">
+                <v-icon color="red">mdi-magnify</v-icon>
+              </v-btn>
+      </v-card-actions>
   </v-card>
 </template>
 
 <script>
   export default {
-    props: ['title','source','thumbnails','date'],
+    props: ['title','source','thumbnails','date','id'],
   }
 </script>
