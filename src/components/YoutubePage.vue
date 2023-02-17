@@ -7,12 +7,12 @@
       :prominent="!!mobile"
     >
       <v-container class="py-0 fill-height">
-        <v-avatar
+        <v-icon
           class="mr-10"
-          size="32"
+          large
         >
-          <img src="../assets/youtube.png">
-        </v-avatar>
+          mdi-video-box
+        </v-icon>
 
         <v-btn
           text
@@ -55,7 +55,7 @@
       temporary
       right
       width="50%"
-      color="grey lighten-3"
+      color="grey lighten-5"
     >
     <div v-if="chargementCommentaire" class="text-center my-12">
           <v-progress-circular

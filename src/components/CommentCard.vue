@@ -7,7 +7,7 @@
     <v-card-title>
       <v-avatar
       :color="color" 
-      size="56"
+      size="32"
       >
       </v-avatar>
       <div class="ml-3">#{{ index }} {{ user }}</div>
