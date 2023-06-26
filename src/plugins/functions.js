@@ -1,6 +1,6 @@
 export default {
     youtubeGetID(link){
-        const regex = /(?:http(?:s?):\/\/(?:www\.|m\.)?youtu(?:(?:be\.com\/watch\?v=|\.be\/)|(?:be\.com\/shorts\/)|(?:be\.com\/v\/))([\w\-_]*)(?:(?:&.*)|(?:\?.*))?)|([\w\-_]+)/g;
+        const regex = /(?:http(?:s?):\/\/(?:www\.|m\.)?youtu(?:(?:be\.com\/watch\?v=|\.be\/)|(?:be\.com\/(?:shorts|live)\/)|(?:be\.com\/v\/))([\w\-_]*)(?:(?:&.*)|(?:\?.*))?)|([\w\-_]+)/g;
         let m;
         while ((m = regex.exec(link)) !== null) {
             if (m.index === regex.lastIndex) {
