@@ -6,8 +6,6 @@ name: Node.js Build & Release
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
