@@ -1,19 +1,19 @@
 <template>
-    <v-card
-    class="mx-auto"
-    max-width="600"
-    >
-
+  <v-card
+  class="mx-auto"
+  max-width="600"
+  >
+  <v-card-item>
     <v-card-title>
       <v-avatar
       :color="color" 
       size="32"
       >
       </v-avatar>
-      <div class="ml-3">#{{ index }} {{ user }}</div>
+      #{{ index }} {{ user }}
     </v-card-title>
-
     <v-card-subtitle>{{ date }}</v-card-subtitle>
+  </v-card-item>
 
     <v-divider></v-divider>
 

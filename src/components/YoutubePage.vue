@@ -2,14 +2,15 @@
   <v-app>
     <v-app-bar
       app
+      :absolute="absoluteAppbar"
       color="red"
       dark
-      :prominent="!!mobile"
+      :density="sizeAppbar"
     >
       <v-container class="py-0 fill-height">
         <v-icon
           class="mr-10"
-          large
+          size="x-large"
         >
           mdi-video-box
         </v-icon>
@@ -28,35 +29,30 @@
         >
           Abonnements
         </v-btn>
-        <v-btn 
-            text
-            @click="generate"
-        >
-          Lancer
-        </v-btn>
-        
-          <v-text-field
-            dense
-            flat
-            hide-details
-            rounded
-            solo-inverted label="ID/URL de la vidéo"
-            v-model="url"
-            @keydown.enter="generate"
-          ></v-text-field>
-        
+
+        <v-text-field
+          :loading="chargement"
+          hide-details
+          density="default"
+          label="ID/URL de la vidéo"
+          append-inner-icon="mdi-magnify"
+          v-model="url"
+          @keydown.enter="generate"
+          @click:append-inner="generate"
+        ></v-text-field>       
       </v-container>
     </v-app-bar>
 
     <v-navigation-drawer
-      v-model="commentaire"
-      absolute
-      bottom
+      v-model="commentaire"    
       temporary
-      right
-      width="50%"
-      color="grey lighten-5"
+      width="750"
+      color="#fafafa"
     >
+    <v-spacer></v-spacer>
+    <div class="text-right">    
+    <v-btn @click="commentaire = false" variant="text" icon="mdi-close"></v-btn>
+    </div>
     <div v-if="chargementCommentaire" class="text-center my-12">
           <v-progress-circular
               :size="70"
@@ -66,7 +62,7 @@
           >
           </v-progress-circular>
     </div>
-    <v-container>
+    <v-container class="pt-0">
           <v-row>
             <v-col v-for="(object, index) in comments" :key="index" :cols="6">
               <CommentCard :user="object.user" :index="index+1" :message="object.message" :date="dateToString(object.date)" :color="object.color"/>
@@ -76,7 +72,7 @@
     </v-navigation-drawer>
 
     <v-main>
-      <div v-if="chargement" class="text-center my-12">
+      <!-- <div v-if="chargement" class="text-center my-12">
           <v-progress-circular
               :size="70"
               :width="7"
@@ -84,11 +80,17 @@
               indeterminate
           >
           </v-progress-circular>
-      </div>
+      </div> -->
 
       <v-container class="d-flex">
-        <v-alert v-model="erreur" type="error" dismissible class="mx-auto my-4 text-center">
-          ID/URL Incorrect
+        <v-alert 
+          v-model="erreur" 
+          type="warning" 
+          color="red" 
+          closable 
+          class="mx-auto my-4 text-center" 
+          style="max-width: 300px">
+            ID/URL Incorrecte
         </v-alert>
       </v-container>
 
@@ -124,15 +126,14 @@
         SubscriptionCard
     },
     computed: {
-      mobile() {
-        return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs
+      sizeAppbar() {
+        return this.$vuetify.display.mobile ? 'prominent' : 'default'
       },
       title() {
-        if (this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs){
-          return 'Vidéo & audio YouTube'
-        } else {
-          return 'Lecteur vidéo et audio YouTube'
-        }
+        return this.$vuetify.display.mobile ? 'Vidéo & audio YouTube' : 'Lecteur vidéo et audio YouTube'
+      },
+      absoluteAppbar() {
+        return this.$vuetify.display.mobile ? true : false
       }
     },
     data: () => ({
@@ -178,6 +179,7 @@
             }
         },
         generate(){
+            this.$data.erreur = false
             this.$data.chargement = true
             var yt_id = functions.youtubeGetID(this.$data.url)
             this.$data.url = ''

@@ -1,47 +1,22 @@
 {
   "name": "appv2-youtube",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "core-js": "^3.31.1",
-    "vue": "v2-latest",
-    "vuetify": "v2-stable"
+
+    "roboto-fontface": "*",
+    "vue": "^3.3.4",
+    "vuetify": "^3.3.8",
+    "webfontloader": "*"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.9",
-    "@babel/eslint-parser": "^7.22.9",
-    "@vue/cli-plugin-babel": "^5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-service": "^5.0.8",
-    "eslint": "^8.45.0",
-    "eslint-plugin-vue": "^9.15.1",
-    "sass": "^1.63.6",
-    "sass-loader": "^13.3.2",
-    "vue-cli-plugin-vuetify": "^2.5.8",
-    "vuetify-loader": "^1.9.2"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "@vitejs/plugin-vue": "*",
+    "vite": "^4.4.0",
+    "vite-plugin-vuetify": "^1.0.2"
+  }
 }

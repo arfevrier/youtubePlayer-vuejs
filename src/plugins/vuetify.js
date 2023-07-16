@@ -1,16 +1,25 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib/framework';
+/**
+ * plugins/vuetify.js
+ *
+ * Framework documentation: https://vuetifyjs.com`
+ */
 
-Vue.use(Vuetify);
+// Styles
+import 'vuetify/styles'
 
-export default new Vuetify({
-    theme: {
-        themes: {
-          light: {
-            primary: 'f44336',
-            secondary: '#b0bec5',
-          },
+// Composables
+import { createVuetify } from 'vuetify'
+
+// https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
+export default createVuetify({
+  theme: {
+    themes: {
+      light: {
+        colors: {
+          primary: '#f44336',
+          secondary: '#b0bec5',
         },
       },
-    
-});
+    },
+  },
+})
