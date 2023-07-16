@@ -1,4 +1,12 @@
-# default
+# YouTube Player alternative
+
+![image (1)](https://github.com/arnicel/youtubePlayer-vuejs/assets/23292338/9c81125e-9d72-4094-974b-439c6a547e32)
+
+Via a youtube URL enables native HTML5 playback of a youtube video and audio file. Retrieves the latest subscriptions to a YouTube account and lists videos.
+
+## Builded files
+
+Check Github action artifacts to find the latest build.
 
 ## Project setup
 
