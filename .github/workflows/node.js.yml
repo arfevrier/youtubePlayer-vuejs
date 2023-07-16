@@ -17,8 +17,10 @@ jobs:
       with:
         node-version: 18
         cache: 'yarn'
-    - run: Yarn Install
-    - run: Yarn run build
+    - name: Yarn Install
+      run: yarn
+    - name: Yarn Run Build
+      run: yarn build
     - name: Upload Dist release
       uses: actions/upload-artifact@v3
       with:
