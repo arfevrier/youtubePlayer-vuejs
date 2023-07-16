@@ -17,7 +17,7 @@
 
         <v-btn
           text
-          href="https://apps.arfevrier.fr/youtube_player/"
+          href="./"
         >
         {{ title }}
         </v-btn>
