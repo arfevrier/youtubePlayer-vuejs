@@ -4,6 +4,7 @@ export default {
     },
     yt: {
         api: 'https://www.googleapis.com/youtube/v3',
+        thumbnail: 'https://i.ytimg.com/vi',
         key: 'AIzaSyDvXwykt34G-Ebxa1kNyDCqAuAo0Jj6J5k'
     },
 }
