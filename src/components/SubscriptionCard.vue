@@ -5,7 +5,7 @@
   >
     <v-card-item>
       <v-card-title>{{ title }}</v-card-title>
-      <v-card-subtitle>Vidéo | {{ date }}</v-card-subtitle>
+      <v-card-subtitle>{{ channel }} | {{ date }}</v-card-subtitle>
     </v-card-item>
 
     <v-divider></v-divider>
@@ -26,6 +26,6 @@
 
 <script>
   export default {
-    props: ['title','source','thumbnails','date','id'],
+    props: ['title','source','thumbnails','date','id','channel'],
   }
 </script>

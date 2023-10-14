@@ -115,6 +115,7 @@
               <SubscriptionCard :title="object.title"
                                 :source="`${stc.afr.api}/youtube/video/${object.resourceId.videoId}`"
                                 :id="object.resourceId.videoId"
+                                :channel="object.channelTitle"
                                 :thumbnails="`${stc.yt.thumbnail}/${object.resourceId.videoId}/mqdefault.jpg`"
                                 :date="dateToString(object.publishedAt)"
                                 @startSearch="search($event)" />
