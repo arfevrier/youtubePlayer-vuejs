@@ -17,7 +17,7 @@
 
         <v-btn
           text
-          href="https://apps.arfevrier.fr/youtube_player/"
+          href="./"
         >
         {{ title }}
         </v-btn>
@@ -65,7 +65,11 @@
     <v-container class="pt-0">
           <v-row>
             <v-col v-for="(object, index) in comments" :key="index" :cols="6">
-              <CommentCard :user="object.user" :index="index+1" :message="object.message" :date="dateToString(object.date)" :color="object.color"/>
+              <CommentCard :user="object.user"
+                           :index="index+1"
+                           :message="object.message"
+                           :date="dateToString(object.date)"
+                           :color="object.color" />
             </v-col>
           </v-row>
       </v-container>
@@ -97,13 +101,23 @@
       <v-container>
           <v-row>
             <v-col v-for="(object, index) in videos" :key="'V'+index">
-              <VideoCard :title="object.title" :id="object.id" :source="object.source" @showComment="comment($event)"/>
+              <VideoCard :title="object.title"
+                         :id="object.id"
+                         :source="`${stc.afr.api}/youtube/video/${object.id}`"
+                         @showComment="comment($event)" />
             </v-col>
             <v-col v-for="(object, index) in audios" :key="'A'+index">
-              <AudioCard :title="object.title" :id="object.id" :source="object.source"/>
+              <AudioCard :title="object.title"
+                         :id="object.id"
+                         :source="`${stc.afr.api}/youtube/audio/${object.id}`" />
             </v-col>
             <v-col v-for="(object, index) in subscriptions" :key="index">
-              <SubscriptionCard :title="object.title" :source="'https://api.arfevrier.fr/v2/youtube/video/'+object.resourceId.videoId" :id="object.resourceId.videoId" :thumbnails="'https://i.ytimg.com/vi/'+object.resourceId.videoId+'/mqdefault.jpg'" :date="dateToString(object.publishedAt)" @startSearch="search($event)"/>
+              <SubscriptionCard :title="object.title"
+                                :source="`${stc.afr.api}/youtube/video/${object.resourceId.videoId}`"
+                                :id="object.resourceId.videoId"
+                                :thumbnails="'https://i.ytimg.com/vi/'+object.resourceId.videoId+'/mqdefault.jpg'"
+                                :date="dateToString(object.publishedAt)"
+                                @startSearch="search($event)" />
             </v-col>
           </v-row>
       </v-container>
@@ -117,6 +131,7 @@
   import AudioCard from './AudioCard';
   import SubscriptionCard from './SubscriptionCard';
   import functions from '../plugins/functions';
+  import stc from '../plugins/static';
 
   export default {
     components: {
@@ -146,6 +161,7 @@
       videos: [],
       audios: [],
       comments: [],
+      stc: stc,
     }),
     mounted() {
       this.startup()
@@ -154,7 +170,7 @@
         startup(){
             if (window.location.hash.includes("#subscriptions")){
               this.$data.chargement = true
-              fetch("https://api.arfevrier.fr/v2/youtube/subscriptions/"+window.location.hash.split("=")[1])
+              fetch(`${stc.afr.api}/youtube/subscriptions/${window.location.hash.split("=")[1]}`)
               .then(response => {
                   if(response.ok){
                       return response.json()
@@ -182,13 +198,13 @@
             }
         },
         generate(){
+            var yt_id = functions.youtubeGetID(this.$data.url)
             this.$data.erreur = false
             this.$data.chargement = true
-            var yt_id = functions.youtubeGetID(this.$data.url)
             this.$data.url = ''
 
             Promise.all([
-              fetch("https://www.googleapis.com/youtube/v3/videos?id="+yt_id+"&part=snippet&key=AIzaSyDvXwykt34G-Ebxa1kNyDCqAuAo0Jj6J5k")
+              fetch(`${stc.yt.api}/videos?id=${yt_id}&part=snippet&key=${stc.yt.key}`)
             ]).then(([title]) => {
                 if(title.ok){
                     return Promise.all([title.json()])
@@ -197,8 +213,8 @@
                 }         
             })
             .then(([title]) => {
-                this.$data.videos.push({title:title.items[0].snippet.title, id:yt_id, source:"https://api.arfevrier.fr/v2/youtube/video/"+yt_id})
-                this.$data.audios.push({title:title.items[0].snippet.title, id:yt_id, source:"https://api.arfevrier.fr/v2/youtube/audio/"+yt_id})
+                this.$data.videos.push({title:title.items[0].snippet.title, id:yt_id})
+                this.$data.audios.push({title:title.items[0].snippet.title, id:yt_id})
             })
             .catch(err => {
                 console.log(err);
@@ -213,7 +229,12 @@
         },
         async requestComments(id, pageToken=''){
           this.$data.chargementCommentaire = true
-          var response = await fetch("https://www.googleapis.com/youtube/v3/commentThreads?order=time&maxResults=100&videoId="+id+"&part=snippet&key=AIzaSyDvXwykt34G-Ebxa1kNyDCqAuAo0Jj6J5k&pageToken="+pageToken)
+          var response = await fetch(`${stc.yt.api}/commentThreads?order=time&`
+                                                            + `maxResults=100&`
+                                                            + `videoId=${id}&`
+                                                            + `part=snippet&`
+                                                            + `key=${stc.yt.key}&`
+                                                            + `pageToken=${pageToken}`)
           response = await response.json()
           response.items.forEach(element => {
             this.$data.comments.push({user:element.snippet.topLevelComment.snippet.authorDisplayName,
