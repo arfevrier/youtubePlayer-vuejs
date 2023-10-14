@@ -103,7 +103,7 @@
               <AudioCard :title="object.title" :id="object.id" :source="object.source"/>
             </v-col>
             <v-col v-for="(object, index) in subscriptions" :key="index">
-              <SubscriptionCard :title="object.title" :source="'https://api.arfevrier.fr/v2/youtube/video/'+object.resourceId.videoId" :id="object.resourceId.videoId" :thumbnails="object.thumbnails.medium.url" :date="dateToString(object.publishedAt)" @startSearch="search($event)"/>
+              <SubscriptionCard :title="object.title" :source="'https://api.arfevrier.fr/v2/youtube/video/'+object.resourceId.videoId" :id="object.resourceId.videoId" :thumbnails="'https://i.ytimg.com/vi/'+object.resourceId.videoId+'/mqdefault.jpg'" :date="dateToString(object.publishedAt)" @startSearch="search($event)"/>
             </v-col>
           </v-row>
       </v-container>
@@ -163,6 +163,9 @@
                   }         
               })
               .then(response => {
+                  response.subscriptions.sort(function(a,b){
+                    return new Date(b.publishedAt) - new Date(a.publishedAt);
+                  }).splice(25);
                   this.$data.subscriptions = response.subscriptions
               })
               .catch(err => {
