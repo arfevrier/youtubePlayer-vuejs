@@ -115,7 +115,7 @@
               <SubscriptionCard :title="object.title"
                                 :source="`${stc.afr.api}/youtube/video/${object.resourceId.videoId}`"
                                 :id="object.resourceId.videoId"
-                                :thumbnails="object.thumbnails.medium.url"
+                                :thumbnails="'https://i.ytimg.com/vi/'+object.resourceId.videoId+'/mqdefault.jpg'"
                                 :date="dateToString(object.publishedAt)"
                                 @startSearch="search($event)" />
             </v-col>
@@ -179,6 +179,9 @@
                   }         
               })
               .then(response => {
+                  response.subscriptions.sort(function(a,b){
+                    return new Date(b.publishedAt) - new Date(a.publishedAt);
+                  }).splice(25);
                   this.$data.subscriptions = response.subscriptions
               })
               .catch(err => {
