@@ -112,12 +112,12 @@
                          :source="`${stc.afr.api}/youtube/audio/${object.id}`" />
             </v-col>
             <v-col v-for="(object, index) in subscriptions" :key="index">
-              <SubscriptionCard :title="object.title"
-                                :source="`${stc.afr.api}/youtube/video/${object.resourceId.videoId}`"
-                                :id="object.resourceId.videoId"
-                                :channel="object.channelTitle"
-                                :thumbnails="`${stc.yt.thumbnail}/${object.resourceId.videoId}/mqdefault.jpg`"
-                                :date="dateToString(object.publishedAt)"
+              <SubscriptionCard :title="object.video_title"
+                                :source="`${stc.afr.api}/youtube/video/${object.video_id}`"
+                                :id="object.video_id"
+                                :channel="object.author_name"
+                                :thumbnails="`${stc.yt.thumbnail}/${object.video_id}/mqdefault.jpg`"
+                                :date="dateToString(object.published_date)"
                                 @startSearch="search($event)" />
             </v-col>
           </v-row>
@@ -181,7 +181,7 @@
               })
               .then(response => {
                   response.subscriptions.sort(function(a,b){
-                    return new Date(b.publishedAt) - new Date(a.publishedAt);
+                    return new Date(b.published_date) - new Date(a.published_date);
                   }).splice(25);
                   this.$data.subscriptions = response.subscriptions
               })
