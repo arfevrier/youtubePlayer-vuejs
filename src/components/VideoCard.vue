@@ -16,10 +16,10 @@
       </div>
     </v-card-text>
     <v-card-actions class="pt-0">
-      <v-btn icon :loading="loading_video" @click="load_video" :href="`${stc.afr.v3}/youtube/download/video/${id}`">
+      <v-btn icon :loading="loading_video" @click="load_video" :href="`${stc.afr.v4}/youtube/download/video/${id}`">
         <v-icon color="red">mdi-download-box</v-icon>
       </v-btn>
-      <v-btn icon :loading="loading_audio" @click="load_audio" :href="`${stc.afr.v3}/youtube/download/audio/${id}`" style="margin-left: 0;">
+      <v-btn icon :loading="loading_audio" @click="load_audio" :href="`${stc.afr.v4}/youtube/download/audio/${id}`" style="margin-left: 0;">
         <v-icon color="red">mdi-download-box-outline</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
