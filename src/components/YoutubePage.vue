@@ -103,17 +103,17 @@
             <v-col v-for="(object, index) in videos" :key="'V'+index">
               <VideoCard :title="object.title"
                          :id="object.id"
-                         :source="`${stc.afr.api}/youtube/video/${object.id}`"
+                         :source="`${stc.afr.v2}/youtube/video/${object.id}`"
                          @showComment="comment($event)" />
             </v-col>
             <v-col v-for="(object, index) in audios" :key="'A'+index">
               <AudioCard :title="object.title"
                          :id="object.id"
-                         :source="`${stc.afr.api}/youtube/audio/${object.id}`" />
+                         :source="`${stc.afr.v2}/youtube/audio/${object.id}`" />
             </v-col>
             <v-col v-for="(object, index) in subscriptions" :key="index">
               <SubscriptionCard :title="object.video_title"
-                                :source="`${stc.afr.api}/youtube/video/${object.video_id}`"
+                                :source="`${stc.afr.v2}/youtube/video/${object.video_id}`"
                                 :id="object.video_id"
                                 :channel="object.author_name"
                                 :thumbnails="`${stc.yt.thumbnail}/${object.video_id}/mqdefault.jpg`"
@@ -171,7 +171,7 @@
         startup(){
             if (window.location.hash.includes("#subscriptions")){
               this.$data.chargement = true
-              fetch(`${stc.afr.api}/youtube/subscriptions/${window.location.hash.split("=")[1]}`)
+              fetch(`${stc.afr.v3}/youtube/subscriptions/${window.location.hash.split("=")[1]}`)
               .then(response => {
                   if(response.ok){
                       return response.json()
